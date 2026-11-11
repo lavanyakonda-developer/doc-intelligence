@@ -1,0 +1,27 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# private interview prep (kept local, not published)
+docs/DECISIONS.md
+docs/interview/
+
+# data (re-creatable via `make data`)
+data/
+*.duckdb
+*.duckdb.wal
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+
+# os / editors
+.DS_Store
+.vscode/
+.idea/
