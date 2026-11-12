@@ -1,0 +1,9 @@
+[
+  {
+    "doc_id": "PAXMEDICA,INC_07_02_2020-EX-10.12-Master Service Agreement",
+    "field": "agreement_date",
+    "cuad_value": "5/25/08",
+    "corrected_value": "5/25/18",
+    "reason": "CUAD's own highlighted span reads 'May 25th, 2018'; the normalized answer has a typo'd year."
+  }
+]

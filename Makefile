@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade test lint
+.PHONY: setup data explore golden degrade gt test lint
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -21,3 +21,6 @@ test:
 
 lint:
 	uv run ruff check . && uv run ruff format --check .
+
+gt:               ## CUAD labels -> evalsets/ground_truth.jsonl
+	uv run python scripts/build_ground_truth.py
