@@ -8,6 +8,12 @@ baseline run. Paired bootstrap on the same docs:
 
   uv run python scripts/eval_check.py --write-baseline     # snapshot the production run
   uv run python scripts/eval_check.py --candidate <run-id prefix>
+  uv run python scripts/eval_check.py --snapshot            # CI: re-score committed outputs
+
+--snapshot re-scores evalsets/snapshot/ (the production run's raw model outputs, committed)
+with the current code: records are rebuilt from raw, so normalizer / matcher / ground-truth
+changes are caught with no API calls and no data/ folder. Prompt or model changes are new
+runs, checked locally with --candidate.
 """
 
 import argparse
@@ -15,11 +21,13 @@ import json
 import sys
 from pathlib import Path
 
-from docintel.eval.db import connect
+from docintel.eval.db import build, connect
 from docintel.eval.metrics import bootstrap_f1, doc_counts, paired_bootstrap
 
 PRODUCTION = "6-luna-low-extract_v3-pypdf-clean-r0"
-BASELINE = Path(__file__).resolve().parents[1] / "evalsets" / "baseline.json"
+EVALSETS = Path(__file__).resolve().parents[1] / "evalsets"
+BASELINE = EVALSETS / "baseline.json"
+SNAPSHOT = EVALSETS / "snapshot"
 WARN_DROP = 0.02
 
 
@@ -34,8 +42,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--candidate", default=PRODUCTION, help="run-id prefix")
     ap.add_argument("--write-baseline", action="store_true")
+    ap.add_argument("--snapshot", action="store_true", help="re-score committed outputs (CI)")
     args = ap.parse_args()
-    con = connect()
+    con = build(None, SNAPSHOT, rederive=True) if args.snapshot else connect()
 
     if args.write_baseline:
         rid, counts = counts_for(con, PRODUCTION)
@@ -58,6 +67,9 @@ def main() -> int:
     if missing:
         print(f"FAIL: candidate is missing {len(missing)} test docs")
         return 1
+    changed = {d: (a[d], b[d]) for d in a if a[d] != b[d]}
+    for d, (old, new) in sorted(changed.items()):
+        print(f"  changed {d[:50]}: (tp, fp, fn) {old} -> {new}")
     pb = paired_bootstrap(a, b)
     msg = (
         f"{rid} vs baseline {base['run_id']}: ΔF1 {100 * pb.diff:+.1f} "

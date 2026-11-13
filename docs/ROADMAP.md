@@ -9,10 +9,10 @@ Order is fixed: pipeline and evals first, UI only after they're done.
 | 2 | Schema, normalizers, match rules, ground truth + label audit | ✅ |
 | 3 | Parsing: pypdf vs Docling vs vision LLM on clean/light/heavy | ✅ |
 | 4 | Extraction: structured outputs, model size vs cost, prompt versioning | ✅ |
-| 5 | Validation: validators, cross-field checks, retry with feedback, evidence check, abstention | ⏭ next |
-| 6 | Evals: per-field P/R/F1 by type, per parser/model, error taxonomy, threshold tuning on dev, `make eval` → DuckDB | |
-| 7 | Storage & analytics: DuckDB schema + queries | |
-| 8 | API: FastAPI upload → job → result, tests | |
+| 5 | Validation: validators, cross-field checks, retry with feedback, evidence check, abstention | ✅ |
+| 6 | Evals: per-field P/R/F1 by type, per parser/model, error taxonomy, threshold tuning on dev, `make eval` → DuckDB | ✅ |
+| 7 | Pipeline entry point, results store + analytics queries, CI (GitHub Actions) | ✅ |
+| 8 | API: FastAPI upload → job → result, tests | ⏭ next |
 | 9 | Deploy: Docker + Cloud Run, secrets, cost controls | |
 | **9.5** | **Demo UI + public-demo hardening** (below) | |
 | 10 | Observability: Phoenix tracing linked to eval results | |

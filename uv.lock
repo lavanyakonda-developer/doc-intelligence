@@ -368,7 +368,6 @@ name = "docintel"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "docling", extra = ["rapidocr"] },
     { name = "duckdb" },
     { name = "numpy" },
     { name = "openai" },
@@ -387,10 +386,12 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+research = [
+    { name = "docling", extra = ["rapidocr"] },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "docling", extras = ["rapidocr"], specifier = ">=2.150.0" },
     { name = "duckdb", specifier = ">=2.0.0" },
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "openai", specifier = ">=3.50.0" },
@@ -409,6 +410,7 @@ dev = [
     { name = "pytest", specifier = ">=8" },
     { name = "ruff", specifier = ">=0.6" },
 ]
+research = [{ name = "docling", extras = ["rapidocr"], specifier = ">=2.150.0" }]
 
 [[package]]
 name = "doclang"

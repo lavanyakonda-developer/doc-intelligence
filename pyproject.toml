@@ -5,7 +5,6 @@ description = "Document intelligence pipeline: messy contracts in, validated JSO
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "docling[rapidocr]>=2.150.0",
     "duckdb>=2.0.0",
     "numpy>=2.5.4",
     "openai>=3.50.0",
@@ -18,11 +17,19 @@ dependencies = [
     "tiktoken>=0.14.0",
 ]
 
+[project.scripts]
+docintel = "docintel.cli:main"
+
 [dependency-groups]
 dev = [
     "pytest>=8",
     "ruff>=0.6",
     "pre-commit>=3.7",
+]
+# Phase 3 parser comparison only (D6 keeps Docling out of production). Pulls in torch, so
+# it's opt-in: `uv sync --group research`. Keeps CI and the Docker image small.
+research = [
+    "docling[rapidocr]>=2.150.0",
 ]
 
 [build-system]

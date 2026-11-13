@@ -1,0 +1,41 @@
+# Every push / PR: lint, unit tests, and the eval regression gate.
+# No API calls and no secrets: the gate re-scores committed model outputs
+# (evalsets/snapshot/) with the current code. See scripts/eval_check.py.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read  # least privilege: CI only reads the repo
+
+concurrency:  # a new push cancels the still-running check of the previous one
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true  # cache keyed on uv.lock
+
+      - name: Install (locked, dev group only; no Docling/torch)
+        run: uv sync --locked
+
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Unit tests
+        run: uv run pytest  # tests needing CUAD data/ skip themselves
+
+      - name: Eval regression gate
+        run: uv run python scripts/eval_check.py --snapshot

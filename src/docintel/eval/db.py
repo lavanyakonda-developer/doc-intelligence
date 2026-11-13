@@ -15,9 +15,11 @@ from pathlib import Path
 import duckdb
 
 from docintel.config import PROJECT_ROOT
-from docintel.corpus import golden_set, ground_truth
+from docintel.corpus import CONDITIONS, golden_set, ground_truth
 from docintel.eval.score import score
 from docintel.extraction.extractor import RUNS
+from docintel.extraction.llm_schema import LLMExtraction
+from docintel.extraction.to_record import to_record
 from docintel.parsing.base import CACHE_DIR
 from docintel.schema.types import ContractRecord
 from docintel.validation.validate import validate
@@ -47,12 +49,17 @@ CREATE TABLE outcomes (
 """
 
 
-def _load_run(run: Path) -> tuple[dict, dict[str, dict]]:
+def _load_run(run: Path, rederive: bool = False) -> tuple[dict, dict[str, dict]]:
+    """rederive=True rebuilds each record from the model's raw output with the CURRENT
+    to_record/normalizers, so a code change that alters records shows up in the scores."""
     cfg = json.loads((run / "config.json").read_text())
     results = {}
     for f in run.glob("*.json"):  # retries/ is a subfolder, not matched
         if f.name != "config.json":
             r = json.loads(f.read_text())
+            if rederive and r["status"] == "ok":
+                rec, errors = to_record(r["doc_id"], LLMExtraction.model_validate(r["raw"]))
+                r["record"], r["conversion_errors"] = rec.model_dump(mode="json"), errors
             results[r["doc_id"]] = r
     return cfg, results
 
@@ -98,9 +105,13 @@ def run_rows(cfg: dict, results: dict[str, dict], gt: dict[str, dict]) -> list[t
     return rows
 
 
-def build(db_path: Path = DB_PATH) -> duckdb.DuckDBPyConnection:
-    db_path.unlink(missing_ok=True)
-    con = duckdb.connect(str(db_path))
+def build(
+    db_path: Path | None = DB_PATH, runs_dir: Path = RUNS, *, rederive: bool = False
+) -> duckdb.DuckDBPyConnection:
+    """db_path=None -> in-memory (CI)."""
+    if db_path is not None:
+        db_path.unlink(missing_ok=True)
+    con = duckdb.connect(str(db_path) if db_path is not None else ":memory:")
     con.execute(SCHEMA)
     con.executemany(
         "INSERT INTO docs VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -113,8 +124,10 @@ def build(db_path: Path = DB_PATH) -> duckdb.DuckDBPyConnection:
         ],
     )  # fmt: skip
     gt = ground_truth()
-    for run in sorted(p for p in RUNS.iterdir() if (p / "config.json").exists()):
-        cfg, results = _load_run(run)
+    for run in sorted(p for p in runs_dir.iterdir() if (p / "config.json").exists()):
+        cfg, results = _load_run(run, rederive)
+        if cfg["condition"] not in CONDITIONS:  # product traffic ('upload'): no ground truth
+            continue
         con.execute(
             "INSERT INTO runs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
@@ -125,10 +138,11 @@ def build(db_path: Path = DB_PATH) -> duckdb.DuckDBPyConnection:
                 sum(r.get("seconds", 0) for r in results.values()),
             ),
         )  # fmt: skip
-        con.executemany(
-            "INSERT INTO outcomes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            run_rows(cfg, results, gt),
-        )
+        rows = run_rows(cfg, results, gt)
+        if rows:
+            con.executemany(
+                "INSERT INTO outcomes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", rows
+            )
     return con
 
 

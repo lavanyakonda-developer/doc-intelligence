@@ -34,11 +34,12 @@ class Parser(Protocol):
 
 
 def parse_cached(
-    parser: Parser, pdf: Path, condition: str, *, refresh: bool = False
+    parser: Parser, pdf: Path, condition: str, *, refresh: bool = False, key: str | None = None
 ) -> ParseResult:
     """Parse once, reuse forever. Paid parsers must never be re-billed for an eval re-run.
-    Cache key = parser name + condition (clean/light/heavy) + document stem."""
-    path = CACHE_DIR / parser.name / condition / f"{pdf.stem}.json"
+    Cache key = parser name + condition (clean/light/heavy/upload) + document key
+    (the file stem for the corpus; a content hash for uploads, so names can't collide)."""
+    path = CACHE_DIR / parser.name / condition / f"{key or pdf.stem}.json"
     if path.exists() and not refresh:
         return ParseResult(**json.loads(path.read_text()))
     t0 = time.perf_counter()

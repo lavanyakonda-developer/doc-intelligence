@@ -1,0 +1,11 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "low",
+  "prompt": "extract_v3",
+  "parser": "pypdf",
+  "condition": "clean",
+  "replicate": 0,
+  "run_id": "6-luna-low-extract_v3-pypdf-clean-r0-bb123e85",
+  "prompt_hash": "9b8ab48a68",
+  "schema_version": "llm-v1"
+}

@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval
+.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -26,7 +26,7 @@ gt:               ## CUAD labels -> evalsets/ground_truth.jsonl
 	uv run python scripts/build_ground_truth.py
 
 parsers:          ## parser comparison (cached; vision costs ~$0.10 on first run)
-	uv run python scripts/run_parsers.py
+	uv run --group research python scripts/run_parsers.py
 	uv run python scripts/parser_report.py
 
 extract:          ## extraction on dev with the current prompt (cached; ~$0.01 first run)
@@ -39,3 +39,12 @@ eval:             ## Phase 6: DuckDB + all breakdowns -> RESULTS.md, error CSV, 
 	uv run python scripts/error_review.py
 	uv run python scripts/eval_report.py > /dev/null
 	uv run python scripts/eval_check.py
+
+seed:             ## load the golden set into the results store (data/docintel.duckdb, $0)
+	uv run docintel seed
+
+ci:               ## what GitHub Actions runs: lint, tests, eval gate on the committed snapshot
+	uv run ruff check .
+	uv run ruff format --check .
+	uv run pytest
+	uv run python scripts/eval_check.py --snapshot
