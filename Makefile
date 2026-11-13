@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint parsers extract
+.PHONY: setup data explore golden degrade gt test lint parsers extract validate
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -31,3 +31,6 @@ parsers:          ## parser comparison (cached; vision costs ~$0.10 on first run
 
 extract:          ## extraction on dev with the current prompt (cached; ~$0.01 first run)
 	uv run python scripts/run_extraction.py --model gpt-6-luna --prompt extract_v3 --split dev
+
+validate:         ## Phase 5: retry + self-consistency + abstention table -> docs/RESULTS.md (cached)
+	uv run python scripts/run_validation.py

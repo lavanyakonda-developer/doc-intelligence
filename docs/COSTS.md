@@ -11,8 +11,9 @@ Budget target: **< $5 total API spend**. Prices: [OpenAI pricing](https://develo
 | 2026-11-13 | Phase 4 dev: model comparison | gpt-6.1-terra | 8 docs | 100,568 | 6,151 | 0.119 | |
 | 2026-11-13 | Phase 4 test: final v3 | gpt-6-luna (×3), gpt-6.1-terra (×1) | 22 docs | 405k per run | ~19.5k per run | 0.075 + 0.462 | |
 | 2026-11-13 | Phase 4 end-to-end parser runs | gpt-6-luna | 6 docs × 4 parser/conditions | ~110k | ~6k | 0.029 | |
+| 2026-11-13 | Phase 5 retry-with-feedback | gpt-6-luna | 4 docs (pypdf 3, docling 1) | ~55k | ~3k | 0.010 | self-consistency reused Phase 4 replicates: $0 |
 
-**Running total: ~$0.86** (Phase 3: $0.105, Phase 4: $0.750)
+**Running total: ~$0.87** (Phase 3: $0.105, Phase 4: $0.750, Phase 5: $0.010)
 
 Per-document extraction cost, first (uncached) run, ~13.5k input tokens: **gpt-6-luna ≈ $0.002**, **gpt-6.1-terra ≈ $0.021**.
 

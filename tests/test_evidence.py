@@ -58,3 +58,32 @@ def test_cuad_spans_are_found_in_cuad_text():
 def test_cuad_omitted_marker_splits_spans():
     doc = "Party may terminate as follows: (a) by notice; (b) upon a change of control."
     assert evidence_found("terminate as follows:<omitted>(b) upon a change of control", doc)
+
+
+def test_located_offsets_point_into_original_text():
+    from docintel.schema.evidence import NormalizedDoc
+
+    doc = "Header.\n\nThis  Agreement   shall be governed by the\nlaws of the State of “New York”."
+    nd = NormalizedDoc(doc)
+    loc = nd.locate('governed by the laws of the State of "New York"')
+    assert loc.method == "exact"
+    assert doc[loc.start : loc.end] == "governed by the\nlaws of the State of “New York”"
+
+
+def test_locate_dehyphenated_and_fuzzy():
+    from docintel.schema.evidence import NormalizedDoc
+
+    nd = NormalizedDoc("The termi-\n  nation fee is payable. Governed by laws of New Y0rk State.")
+    assert nd.locate("termination fee").method == "exact"
+    fz = nd.locate("Governed by laws of New York State")
+    assert fz.method == "fuzzy" and fz.score >= 90
+    assert nd.text[fz.start : fz.end].startswith("Governed")
+    assert nd.locate("an entirely invented sentence about cats") is None
+
+
+def test_locate_all_multi_span():
+    from docintel.schema.evidence import NormalizedDoc
+
+    nd = NormalizedDoc("Clause A text. Other. Clause B text.")
+    assert len(nd.locate_all("clause a text … clause b text")) == 2
+    assert nd.locate_all("clause a text … clause zz nothing like it at all") is None

@@ -50,3 +50,34 @@ Prompt `extract_v3`, reasoning effort `low`, pypdf text, Structured Outputs. Mic
 Note: one test contract (GWG Holdings) lists 26 trusts individually that CUAD summarizes as one party, which adds 26
 party-level false positives and lowers micro precision by ~8 points. Phase 6 adds per-document scoring for list fields.
 <!-- extraction:end -->
+
+<!-- validation:start -->
+## Validation & abstention (Phase 5)
+
+gpt-6-luna, prompt v3, pypdf text, 22 test docs. Abstaining = returning no value for a field (it goes to human review). Coverage = share of predicted values still returned. Self-consistency uses 3 replicate runs (cost 3× extraction).
+
+**Retry with feedback** (fields failing deterministic checks get one retry):
+
+| parser / condition | docs | non-absent fields | failed | fixed by retry | retry $ |
+|---|---|---|---|---|---|
+| pypdf / clean | 30 | 247 | 3 | 1 | $0.0095 |
+| vision-gpt-6-luna / heavy | 6 | 55 | 0 | 0 | $0.0000 |
+| docling / heavy | 6 | 57 | 1 | 0 | $0.0007 |
+
+**Self-consistency vs correctness** (test, predicted fields):
+
+| signal | n | accuracy |
+|---|---|---|
+| replicas agree | 169 | 89.9% |
+| replicas disagree | 16 | 43.8% |
+
+**Abstention policies:**
+
+| policy | precision | recall | F1 | coverage | FP | FN |
+|---|---|---|---|---|---|---|
+| accept all | 79.3 | 90.4 | 84.5 | 100.0% | 49 | 20 |
+| abstain: failed | 79.3 | 90.4 | 84.5 | 100.0% | 49 | 20 |
+| abstain: failed + unverified | 79.7 | 87.0 | 83.2 | 94.6% | 46 | 27 |
+| abstain: replicas disagree | 81.8 | 86.5 | 84.1 | 91.4% | 40 | 28 |
+| abstain: unverified OR disagree | 82.2 | 84.1 | 83.1 | 87.6% | 38 | 33 |
+<!-- validation:end -->

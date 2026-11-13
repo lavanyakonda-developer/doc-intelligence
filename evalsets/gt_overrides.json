@@ -5,5 +5,33 @@
     "cuad_value": "5/25/08",
     "corrected_value": "5/25/18",
     "reason": "CUAD's own highlighted span reads 'May 25th, 2018'; the normalized answer has a typo'd year."
+  },
+  {
+    "doc_id": "SPHERE3DCORP_06_24_2020-EX-10.12-CONSULTING AGREEMENT",
+    "field": "expiration_date",
+    "cuad_value": "6/1/21",
+    "corrected_value": "5/31/21",
+    "reason": "D8 audit (model-independent): label contradicts CUAD's own highlighted span; span: 'expiring May 31st 2021'."
+  },
+  {
+    "doc_id": "GluMobileInc_20070319_S-1A_EX-10.09_436630_EX-10.09_Content License Agreement2",
+    "field": "agreement_date",
+    "cuad_value": "11/18/05",
+    "corrected_value": "11/11/05",
+    "reason": "D8 audit (model-independent): label contradicts CUAD's own highlighted span; span: 'Dated as of November 11, 2005' (11/18 is the signature date elsewhere)."
+  },
+  {
+    "doc_id": "PelicanDeliversInc_20200211_S-1_EX-10.3_11975895_EX-10.3_Development Agreement2",
+    "field": "governing_law",
+    "cuad_value": null,
+    "corrected_value": "Washington",
+    "reason": "D8 audit (model-independent): label contradicts CUAD's own highlighted span; span: 'governed by the laws of the State of Washington'; answer was empty."
+  },
+  {
+    "doc_id": "TICKETSCOMINC_06_22_1999-EX-10.22-SPONSORSHIP AGREEMENT",
+    "field": "renewal_term",
+    "cuad_value": null,
+    "corrected_value": "1 year",
+    "reason": "D8 audit (model-independent): label contradicts CUAD's own highlighted span; span: 'right to renew the Agreement for another year' (CUAD definition includes unilateral extensions); answer was empty."
   }
 ]

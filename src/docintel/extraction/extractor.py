@@ -99,14 +99,42 @@ class Extractor:
         path.write_text(json.dumps(asdict(res), ensure_ascii=False))
         return res
 
-    def _call(self, doc_id: str, text: str) -> ExtractionResult:
+    def retry(
+        self, doc_id: str, text: str, previous_raw: dict, failures: dict[str, list[str]]
+    ) -> ExtractionResult:
+        """Second attempt with the validator's findings fed back. Same contract + the model's
+        previous answer + a list of specific problems. Cached by a hash of the feedback."""
+        feedback = (
+            "Your previous extraction failed these checks against the contract:\n"
+            + "\n".join(f"- {k}: {'; '.join(v)}" for k, v in failures.items())
+            + "\nRe-read the contract and return the complete extraction again. Fix only these "
+            "fields; quote evidence verbatim from the contract (no ellipses, no paraphrasing). "
+            "If the contract does not support a value, return it as absent/null."
+        )
+        key = hashlib.sha256(feedback.encode()).hexdigest()[:8]
+        path = self.dir / "retries" / f"{doc_id}-{key}.json"
+        if path.exists():
+            return ExtractionResult(**json.loads(path.read_text()))
+        messages = [
+            {"role": "user", "content": f"<contract>\n{text}\n</contract>"},
+            {"role": "assistant", "content": json.dumps(previous_raw, ensure_ascii=False)},
+            {"role": "user", "content": feedback},
+        ]
+        res = self._call(doc_id, messages)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(asdict(res), ensure_ascii=False))
+        return res
+
+    def _call(self, doc_id: str, payload: str | list[dict]) -> ExtractionResult:
         t0 = time.perf_counter()
         base = {"doc_id": doc_id, "run_id": self.cfg.run_id, "raw": None, "record": None}
+        if isinstance(payload, str):
+            payload = f"<contract>\n{payload}\n</contract>"
         try:
             r = self.client.responses.parse(
                 model=self.cfg.model,
                 instructions=self.cfg.prompt_text,  # stable prefix -> eligible for prompt caching
-                input=f"<contract>\n{text}\n</contract>",
+                input=payload,
                 text_format=LLMExtraction,
                 reasoning={"effort": self.cfg.effort},
                 max_output_tokens=16000,
