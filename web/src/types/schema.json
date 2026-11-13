@@ -1,0 +1,806 @@
+{
+ "$defs": {
+  "ContractRecord": {
+   "properties": {
+    "doc_id": {
+     "title": "Doc Id",
+     "type": "string"
+    },
+    "document_name": {
+     "$ref": "#/$defs/Extracted_str_"
+    },
+    "parties": {
+     "$ref": "#/$defs/Extracted_list_str__"
+    },
+    "agreement_date": {
+     "$ref": "#/$defs/Extracted_PartialDate_"
+    },
+    "effective_date": {
+     "$ref": "#/$defs/Extracted_PartialDate_"
+    },
+    "expiration_date": {
+     "$ref": "#/$defs/Extracted_Union_PartialDate__Literal__perpetual____"
+    },
+    "renewal_term": {
+     "$ref": "#/$defs/Extracted_Union_Duration__Literal__perpetual____"
+    },
+    "notice_period_to_terminate_renewal": {
+     "$ref": "#/$defs/Extracted_Duration_"
+    },
+    "governing_law": {
+     "$ref": "#/$defs/Extracted_Jurisdiction_"
+    },
+    "non_compete": {
+     "$ref": "#/$defs/Extracted_bool_"
+    },
+    "exclusivity": {
+     "$ref": "#/$defs/Extracted_bool_"
+    },
+    "uncapped_liability": {
+     "$ref": "#/$defs/Extracted_bool_"
+    },
+    "termination_for_convenience": {
+     "$ref": "#/$defs/Extracted_bool_"
+    },
+    "change_of_control": {
+     "$ref": "#/$defs/Extracted_bool_"
+    },
+    "cap_on_liability": {
+     "$ref": "#/$defs/Extracted_list_str__"
+    }
+   },
+   "required": [
+    "doc_id",
+    "document_name",
+    "parties",
+    "agreement_date",
+    "effective_date",
+    "expiration_date",
+    "renewal_term",
+    "notice_period_to_terminate_renewal",
+    "governing_law",
+    "non_compete",
+    "exclusivity",
+    "uncapped_liability",
+    "termination_for_convenience",
+    "change_of_control",
+    "cap_on_liability"
+   ],
+   "title": "ContractRecord",
+   "type": "object"
+  },
+  "ContractResult": {
+   "properties": {
+    "doc_id": {
+     "title": "Doc Id",
+     "type": "string"
+    },
+    "filename": {
+     "title": "Filename",
+     "type": "string"
+    },
+    "status": {
+     "title": "Status",
+     "type": "string"
+    },
+    "error": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Error"
+    },
+    "parser": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Parser"
+    },
+    "pages": {
+     "default": 0,
+     "title": "Pages",
+     "type": "integer"
+    },
+    "run_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Run Id"
+    },
+    "record": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/ContractRecord"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "fields": {
+     "additionalProperties": {
+      "$ref": "#/$defs/FieldResult"
+     },
+     "default": {},
+     "title": "Fields",
+     "type": "object"
+    },
+    "retried_fields": {
+     "default": [],
+     "items": {
+      "type": "string"
+     },
+     "title": "Retried Fields",
+     "type": "array"
+    },
+    "fixed_by_retry": {
+     "default": [],
+     "items": {
+      "type": "string"
+     },
+     "title": "Fixed By Retry",
+     "type": "array"
+    },
+    "cost": {
+     "$ref": "#/$defs/StageCost"
+    },
+    "cost_usd": {
+     "default": 0.0,
+     "title": "Cost Usd",
+     "type": "number"
+    },
+    "seconds": {
+     "default": 0.0,
+     "title": "Seconds",
+     "type": "number"
+    },
+    "processed_at": {
+     "format": "date-time",
+     "title": "Processed At",
+     "type": "string"
+    },
+    "text": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Text"
+    },
+    "needs_review": {
+     "items": {
+      "type": "string"
+     },
+     "readOnly": true,
+     "title": "Needs Review",
+     "type": "array"
+    }
+   },
+   "required": [
+    "doc_id",
+    "filename",
+    "status",
+    "error",
+    "parser",
+    "pages",
+    "run_id",
+    "record",
+    "fields",
+    "retried_fields",
+    "fixed_by_retry",
+    "cost",
+    "cost_usd",
+    "seconds",
+    "processed_at",
+    "text",
+    "needs_review"
+   ],
+   "title": "ContractResult",
+   "type": "object"
+  },
+  "DemoContract": {
+   "description": "contracts/<key>.json",
+   "properties": {
+    "result": {
+     "$ref": "#/$defs/ContractResult"
+    },
+    "truth": {
+     "additionalProperties": {
+      "$ref": "#/$defs/FieldTruth"
+     },
+     "title": "Truth",
+     "type": "object"
+    }
+   },
+   "required": [
+    "result",
+    "truth"
+   ],
+   "title": "DemoContract",
+   "type": "object"
+  },
+  "DemoIndex": {
+   "properties": {
+    "contracts": {
+     "items": {
+      "$ref": "#/$defs/IndexItem"
+     },
+     "title": "Contracts",
+     "type": "array"
+    }
+   },
+   "required": [
+    "contracts"
+   ],
+   "title": "DemoIndex",
+   "type": "object"
+  },
+  "Duration": {
+   "properties": {
+    "value": {
+     "title": "Value",
+     "type": "integer"
+    },
+    "unit": {
+     "enum": [
+      "day",
+      "business_day",
+      "week",
+      "month",
+      "year"
+     ],
+     "title": "Unit",
+     "type": "string"
+    }
+   },
+   "required": [
+    "value",
+    "unit"
+   ],
+   "title": "Duration",
+   "type": "object"
+  },
+  "Extracted_Duration_": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Duration"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[Duration]",
+   "type": "object"
+  },
+  "Extracted_Jurisdiction_": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Jurisdiction"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[Jurisdiction]",
+   "type": "object"
+  },
+  "Extracted_PartialDate_": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/PartialDate"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[PartialDate]",
+   "type": "object"
+  },
+  "Extracted_Union_Duration__Literal__perpetual____": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Duration"
+      },
+      {
+       "const": "perpetual",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[Union[Duration, Literal['perpetual']]]",
+   "type": "object"
+  },
+  "Extracted_Union_PartialDate__Literal__perpetual____": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/PartialDate"
+      },
+      {
+       "const": "perpetual",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[Union[PartialDate, Literal['perpetual']]]",
+   "type": "object"
+  },
+  "Extracted_bool_": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "type": "boolean"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[bool]",
+   "type": "object"
+  },
+  "Extracted_list_str__": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[list[str]]",
+   "type": "object"
+  },
+  "Extracted_str_": {
+   "properties": {
+    "value": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "evidence": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Evidence"
+    }
+   },
+   "title": "Extracted[str]",
+   "type": "object"
+  },
+  "FieldResult": {
+   "properties": {
+    "status": {
+     "title": "Status",
+     "type": "string"
+    },
+    "reasons": {
+     "default": [],
+     "items": {
+      "type": "string"
+     },
+     "title": "Reasons",
+     "type": "array"
+    },
+    "spans": {
+     "default": [],
+     "items": {
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array",
+      "items": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "integer"
+       }
+      ]
+     },
+     "title": "Spans",
+     "type": "array"
+    }
+   },
+   "required": [
+    "status",
+    "reasons",
+    "spans"
+   ],
+   "title": "FieldResult",
+   "type": "object"
+  },
+  "FieldTruth": {
+   "properties": {
+    "gold": {
+     "anyOf": [
+      {},
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Gold"
+    },
+    "outcome": {
+     "enum": [
+      "correct",
+      "partial",
+      "wrong",
+      "excluded"
+     ],
+     "title": "Outcome",
+     "type": "string"
+    }
+   },
+   "required": [
+    "gold",
+    "outcome"
+   ],
+   "title": "FieldTruth",
+   "type": "object"
+  },
+  "IndexItem": {
+   "description": "One entry of index.json",
+   "properties": {
+    "key": {
+     "title": "Key",
+     "type": "string"
+    },
+    "doc_id": {
+     "title": "Doc Id",
+     "type": "string"
+    },
+    "document_name": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Document Name"
+    },
+    "parties": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Parties",
+     "type": "array"
+    },
+    "contract_type": {
+     "title": "Contract Type",
+     "type": "string"
+    },
+    "pages": {
+     "title": "Pages",
+     "type": "integer"
+    },
+    "split": {
+     "enum": [
+      "dev",
+      "test"
+     ],
+     "title": "Split",
+     "type": "string"
+    },
+    "parser": {
+     "title": "Parser",
+     "type": "string"
+    },
+    "cost_usd": {
+     "title": "Cost Usd",
+     "type": "number"
+    },
+    "verified": {
+     "title": "Verified",
+     "type": "integer"
+    },
+    "unverified": {
+     "title": "Unverified",
+     "type": "integer"
+    },
+    "failed": {
+     "title": "Failed",
+     "type": "integer"
+    },
+    "correct": {
+     "title": "Correct",
+     "type": "integer"
+    },
+    "scored": {
+     "title": "Scored",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "key",
+    "doc_id",
+    "document_name",
+    "parties",
+    "contract_type",
+    "pages",
+    "split",
+    "parser",
+    "cost_usd",
+    "verified",
+    "unverified",
+    "failed",
+    "correct",
+    "scored"
+   ],
+   "title": "IndexItem",
+   "type": "object"
+  },
+  "Jurisdiction": {
+   "description": "Canonical governing law. country='OTHER' for non-standard answers; raw keeps the text.",
+   "properties": {
+    "country": {
+     "title": "Country",
+     "type": "string"
+    },
+    "region": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Region"
+    },
+    "raw": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Raw"
+    }
+   },
+   "required": [
+    "country"
+   ],
+   "title": "Jurisdiction",
+   "type": "object"
+  },
+  "PartialDate": {
+   "description": "A date where month/day may be unknown, e.g. CUAD's '09/[]/2019' -> year=2019, month=9.",
+   "properties": {
+    "year": {
+     "title": "Year",
+     "type": "integer"
+    },
+    "month": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Month"
+    },
+    "day": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Day"
+    }
+   },
+   "required": [
+    "year"
+   ],
+   "title": "PartialDate",
+   "type": "object"
+  },
+  "StageCost": {
+   "properties": {
+    "parse_usd": {
+     "default": 0.0,
+     "title": "Parse Usd",
+     "type": "number"
+    },
+    "extract_usd": {
+     "default": 0.0,
+     "title": "Extract Usd",
+     "type": "number"
+    },
+    "retry_usd": {
+     "default": 0.0,
+     "title": "Retry Usd",
+     "type": "number"
+    },
+    "total": {
+     "readOnly": true,
+     "title": "Total",
+     "type": "number"
+    }
+   },
+   "required": [
+    "parse_usd",
+    "extract_usd",
+    "retry_usd",
+    "total"
+   ],
+   "title": "StageCost",
+   "type": "object"
+  }
+ },
+ "title": "DocintelDemo"
+}

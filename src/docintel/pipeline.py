@@ -11,7 +11,7 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 from docintel.extraction.extractor import Extractor, RunConfig
 from docintel.parsing.base import parse_cached
@@ -28,13 +28,20 @@ VISION_MODEL = "gpt-6-luna"
 MAX_PAGES = 60  # golden set tops out at 60 pages; bounds the cost of one request
 
 
+# Serialized output always includes defaulted fields, so the generated TypeScript types
+# mark them required (no `?? []` guards needed in the UI).
+_OUT = ConfigDict(json_schema_serialization_defaults_required=True)
+
+
 class FieldResult(BaseModel):
+    model_config = _OUT
     status: str  # absent | verified | unverified | failed
     reasons: list[str] = []
     spans: list[tuple[int, int]] = []  # char offsets of the evidence in `text` (UI highlight)
 
 
 class StageCost(BaseModel):
+    model_config = _OUT
     parse_usd: float = 0.0
     extract_usd: float = 0.0
     retry_usd: float = 0.0
@@ -46,6 +53,7 @@ class StageCost(BaseModel):
 
 
 class ContractResult(BaseModel):
+    model_config = _OUT
     doc_id: str
     filename: str
     status: str  # ok | error

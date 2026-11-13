@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci serve
+.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci serve demo-data web
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -51,3 +51,11 @@ ci:               ## what GitHub Actions runs: lint, tests, eval gate on the com
 
 serve:            ## run the API on http://127.0.0.1:8000 (docs at /docs)
 	uv run uvicorn docintel.api.app:app --reload
+
+demo-data:        ## export precomputed results + TS types for the static demo ($0, needs data/)
+	uv run python scripts/export_demo.py
+	uv run python scripts/export_schema.py
+	cd web && npm run types
+
+web:              ## run the demo UI locally (http://localhost:5173/doc-intelligence/)
+	cd web && npm install && npm run dev

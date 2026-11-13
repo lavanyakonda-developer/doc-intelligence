@@ -23,10 +23,11 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from docintel.api.jobs import JobRunner, ProcessFn
-from docintel.config import get_settings
+from docintel.config import PROJECT_ROOT, get_settings
 from docintel.pipeline import ContractResult, content_id, process_pdf
-from docintel.storage.store import QUERIES, DuckDBStore, ResultStore
+from docintel.storage.store import QUERIES, DuckDBStore, ResultStore, seed_from_export
 
+DEMO_DATA = PROJECT_ROOT / "web" / "public" / "data"  # committed export (scripts/export_demo.py)
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB: the largest CUAD contract is ~2 MB
 PDF_MAGIC = b"%PDF-"
 
@@ -61,6 +62,7 @@ def create_app(
     process: ProcessFn = process_pdf,
     runner: JobRunner | None = None,
     upload_dir: Path | None = None,
+    seed_dir: Path | None = DEMO_DATA,
 ) -> FastAPI:
     """App factory: tests pass an in-memory store and a fake `process`; production uses
     the defaults. No globals, so every test gets a fresh, isolated app."""
@@ -75,6 +77,8 @@ def create_app(
         if n:
             log.warning("marked %d interrupted jobs as failed", n)
         upload_dir.mkdir(parents=True, exist_ok=True)
+        if seed_dir is not None and (seeded := seed_from_export(store, seed_dir)):
+            log.info("seeded %d demo contracts from %s", seeded, seed_dir)
         yield
         runner.shutdown()
 

@@ -15,6 +15,7 @@ Budget target: **< $5 total API spend**. Prices: [OpenAI pricing](https://develo
 | 2026-11-13 | Phase 6 eval harness (DuckDB, bootstrap, taxonomy) | n/a | cached runs | 0 | 0 | 0.00 | no API calls |
 | 2026-11-13 | Phase 7 end-to-end smoke test: 1 fresh digital PDF + 1 scanned PDF via upload path | gpt-6-luna | 2 docs / 5 pages | ~20k | ~3k | 0.003 | scanned: vision parse + extract, 42 s |
 | 2026-11-13 | Phase 8 API end-to-end test (live server, 1 fresh contract) | gpt-6-luna | 1 doc / 4 pages | ~5k | ~1k | 0.0005 | API tests use a fake pipeline: $0 |
+| 2026-11-13 | Phase 9 static demo export (30 contracts, cached) | n/a | cached | 0 | 0 | 0.00 | no API calls |
 
 **Running total: ~$0.87** (Phase 3: $0.105, Phase 4: $0.750, Phase 5: $0.010, Phase 7: $0.003, Phase 8: $0.0005)
 

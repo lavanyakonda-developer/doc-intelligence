@@ -15,6 +15,6 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=1000]  # stops accidental commits of PDFs / DuckDB files
       - id: end-of-file-fixer
-        exclude: ^evalsets/snapshot/  # verbatim model outputs: never rewrite them
+        exclude: ^(evalsets/snapshot/|web/public/data/)  # generated/verbatim: never rewrite
       - id: trailing-whitespace
-        exclude: ^evalsets/snapshot/
+        exclude: ^(evalsets/snapshot/|web/public/data/)

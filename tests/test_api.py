@@ -35,7 +35,7 @@ def client(tmp_path, fake=None, executor=None):
     store = DuckDBStore()
     fake = fake or FakePipeline()
     runner = JobRunner(store, fake, executor or InlineExecutor())
-    app = create_app(store=store, process=fake, runner=runner, upload_dir=tmp_path)
+    app = create_app(store=store, process=fake, runner=runner, upload_dir=tmp_path, seed_dir=None)
     return TestClient(app), store, fake
 
 
@@ -117,7 +117,7 @@ def test_crash_never_leaves_job_running(tmp_path):
 def test_interrupted_jobs_failed_on_startup(tmp_path):
     store = DuckDBStore()
     store.create_job("j1", "d", "x.pdf", "running")
-    app = create_app(store=store, process=FakePipeline(), upload_dir=tmp_path)
+    app = create_app(store=store, process=FakePipeline(), upload_dir=tmp_path, seed_dir=None)
     with TestClient(app) as c:
         job = c.get("/v1/jobs/j1").json()
     assert job["status"] == "error" and "restart" in job["error"]
@@ -148,3 +148,19 @@ def test_healthz_and_openapi(tmp_path):
         assert c.get("/healthz").json() == {"status": "ok"}
         paths = c.get("/openapi.json").json()["paths"]
         assert {"/v1/jobs", "/v1/jobs/{job_id}", "/v1/contracts/{doc_id}"} <= set(paths)
+
+
+def test_seeds_from_demo_export_when_empty(tmp_path):
+    r = _result("seeded")
+    (tmp_path / "contracts").mkdir()
+    (tmp_path / "contracts" / "a.json").write_text(
+        '{"result": ' + r.model_dump_json() + ', "truth": {}}'
+    )
+    store = DuckDBStore()
+    app = create_app(store=store, process=FakePipeline(), upload_dir=tmp_path / "u",
+                     seed_dir=tmp_path)  # fmt: skip
+    with TestClient(app) as c:
+        assert c.get("/v1/contracts/seeded").status_code == 200
+    with TestClient(app):  # second startup: store not empty -> no re-seed, no duplicates
+        pass
+    assert store.con.execute("SELECT count(*) FROM contracts").fetchone()[0] == 1

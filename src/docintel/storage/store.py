@@ -318,3 +318,15 @@ class DuckDBStore:
         cur = self.con.execute(sql, args or None)
         cols = [d[0] for d in cur.description]
         return [dict(zip(cols, r, strict=True)) for r in cur.fetchall()]
+
+
+def seed_from_export(store: "DuckDBStore", data_dir: Path) -> int:
+    """Load the static demo export (web/public/data/contracts/*.json) into an empty store,
+    so a fresh clone's `make serve` has 30 contracts without downloading CUAD."""
+    (n,) = store.con.execute("SELECT count(*) FROM contracts").fetchone()
+    files = sorted((data_dir / "contracts").glob("*.json")) if data_dir.exists() else []
+    if n or not files:
+        return 0
+    for f in files:
+        store.save(ContractResult.model_validate(json.loads(f.read_text())["result"]))
+    return len(files)
