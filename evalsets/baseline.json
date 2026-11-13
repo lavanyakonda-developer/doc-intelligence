@@ -1,0 +1,121 @@
+{
+ "run_id": "6-luna-low-extract_v3-pypdf-clean-r0-bb123e85",
+ "split": "test",
+ "f1": 0.8449,
+ "ci": [
+  0.7364,
+  0.9224
+ ],
+ "per_doc": {
+  "ALLIANCEBANCORPINCOFPENNSYLVANIA_10_18_2006-EX-1.2-AGENCY AGREEMENT": [
+   6,
+   4,
+   1
+  ],
+  "BLUEROCKRESIDENTIALGROWTHREIT,INC_06_01_2016-EX-1.1-AGENCY AGREEMENT": [
+   9,
+   0,
+   1
+  ],
+  "DYNTEKINC_07_30_1999-EX-10-ONLINE HOSTING AGREEMENT": [
+   9,
+   1,
+   1
+  ],
+  "EcoScienceSolutionsInc_20180406_8-K_EX-10.1_11135398_EX-10.1_Sponsorship Agreement": [
+   7,
+   0,
+   0
+  ],
+  "FEDERATEDGOVERNMENTINCOMESECURITIESINC_04_28_2020-EX-99.SERV AGREE-SERVICES AGREEMENT": [
+   6,
+   3,
+   2
+  ],
+  "GWG HOLDINGS, INC. - ORDERLY MARKETING AGREEMENT": [
+   7,
+   26,
+   1
+  ],
+  "GluMobileInc_20070319_S-1A_EX-10.09_436630_EX-10.09_Content License Agreement2": [
+   4,
+   1,
+   1
+  ],
+  "HealthcentralCom_19991108_S-1A_EX-10.27_6623292_EX-10.27_Co-Branding Agreement": [
+   12,
+   0,
+   0
+  ],
+  "HertzGroupRealtyTrustInc_20190920_S-11A_EX-10.8_11816941_EX-10.8_Trademark License Agreement": [
+   7,
+   2,
+   2
+  ],
+  "INTERSECTENT,INC_05_11_2020-EX-10.1-SUPPLY AGREEMENT": [
+   9,
+   3,
+   0
+  ],
+  "LiquidmetalTechnologiesInc_20200205_8-K_EX-10.1_11968198_EX-10.1_Development Agreement": [
+   9,
+   0,
+   2
+  ],
+  "OFGBANCORP_03_28_2007-EX-10.23-OUTSOURCING AGREEMENT": [
+   12,
+   0,
+   1
+  ],
+  "PfHospitalityGroupInc_20150923_10-12G_EX-10.1_9266710_EX-10.1_Franchise Agreement1": [
+   7,
+   1,
+   2
+  ],
+  "ReynoldsConsumerProductsInc_20191115_S-1_EX-10.18_11896469_EX-10.18_Supply Agreement": [
+   9,
+   1,
+   0
+  ],
+  "SANDRIDGEENERGYINC_08_06_2009-EX-10.6-OPERATIONS AND MAINTENANCE AGREEMENT": [
+   9,
+   1,
+   1
+  ],
+  "Sonos, Inc. - Manufacturing Agreement ": [
+   12,
+   0,
+   0
+  ],
+  "StaarSurgicalCompany_20180801_10-Q_EX-10.37_11289449_EX-10.37_Distributor Agreement": [
+   8,
+   2,
+   2
+  ],
+  "TICKETSCOMINC_06_22_1999-EX-10.22-SPONSORSHIP AGREEMENT": [
+   11,
+   2,
+   0
+  ],
+  "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT": [
+   7,
+   0,
+   0
+  ],
+  "ThriventVariableInsuranceAccountB_20190701_N-6_EX-99.D(IV)_11720968_EX-99.D(IV)_Endorsement Agreement": [
+   4,
+   0,
+   0
+  ],
+  "WaterNowInc_20191120_10-Q_EX-10.12_11900227_EX-10.12_Distributor Agreement": [
+   12,
+   1,
+   2
+  ],
+  "XpresspaGroupInc_20190401_10-K_EX-10.28_11599457_EX-10.28_Marketing Agreement": [
+   12,
+   1,
+   1
+  ]
+ }
+}

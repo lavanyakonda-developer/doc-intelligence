@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint parsers extract validate
+.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -34,3 +34,8 @@ extract:          ## extraction on dev with the current prompt (cached; ~$0.01 f
 
 validate:         ## Phase 5: retry + self-consistency + abstention table -> docs/RESULTS.md (cached)
 	uv run python scripts/run_validation.py
+
+eval:             ## Phase 6: DuckDB + all breakdowns -> RESULTS.md, error CSV, regression gate ($0)
+	uv run python scripts/error_review.py
+	uv run python scripts/eval_report.py > /dev/null
+	uv run python scripts/eval_check.py
