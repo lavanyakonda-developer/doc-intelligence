@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint
+.PHONY: setup data explore golden degrade gt test lint parsers
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -24,3 +24,7 @@ lint:
 
 gt:               ## CUAD labels -> evalsets/ground_truth.jsonl
 	uv run python scripts/build_ground_truth.py
+
+parsers:          ## parser comparison (cached; vision costs ~$0.10 on first run)
+	uv run python scripts/run_parsers.py
+	uv run python scripts/parser_report.py
