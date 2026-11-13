@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci
+.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci serve
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -48,3 +48,6 @@ ci:               ## what GitHub Actions runs: lint, tests, eval gate on the com
 	uv run ruff format --check .
 	uv run pytest
 	uv run python scripts/eval_check.py --snapshot
+
+serve:            ## run the API on http://127.0.0.1:8000 (docs at /docs)
+	uv run uvicorn docintel.api.app:app --reload

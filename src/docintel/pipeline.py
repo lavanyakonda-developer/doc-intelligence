@@ -11,7 +11,7 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 from docintel.extraction.extractor import Extractor, RunConfig
 from docintel.parsing.base import parse_cached
@@ -39,6 +39,7 @@ class StageCost(BaseModel):
     extract_usd: float = 0.0
     retry_usd: float = 0.0
 
+    @computed_field
     @property
     def total(self) -> float:
         return self.parse_usd + self.extract_usd + self.retry_usd
@@ -62,13 +63,15 @@ class ContractResult(BaseModel):
     processed_at: datetime
     text: str | None = None  # parsed text the offsets refer to (omit to keep responses small)
 
+    @computed_field  # serialized, so API clients see it
     @property
     def needs_review(self) -> list[str]:
         return [k for k, f in self.fields.items() if f.status in ("failed", "unverified")]
 
 
-def content_id(pdf: Path) -> str:
-    return hashlib.sha256(pdf.read_bytes()).hexdigest()[:16]
+def content_id(pdf: Path | bytes) -> str:
+    data = pdf if isinstance(pdf, bytes) else pdf.read_bytes()
+    return hashlib.sha256(data).hexdigest()[:16]
 
 
 def _parser(name: str):

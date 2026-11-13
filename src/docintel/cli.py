@@ -23,7 +23,7 @@ def cmd_extract(args) -> int:
     store = None if args.no_store else _store()
     worst = 0
     for pdf in args.pdfs:
-        r = process_pdf(Path(pdf), include_text=False)
+        r = process_pdf(Path(pdf))
         if r.status != "ok":
             print(f"{pdf}: ERROR {r.error}", file=sys.stderr)
             worst = 1
@@ -31,7 +31,7 @@ def cmd_extract(args) -> int:
         if store:
             store.save(r)
         if args.json:
-            print(r.model_dump_json(indent=2))
+            print(r.model_dump_json(indent=2, exclude={"text"}))
             continue
         print(f"\n{r.filename}  [{r.parser}, {r.pages} pages, ${r.cost_usd:.4f}, {r.seconds}s]")
         for name, f in r.fields.items():
@@ -68,8 +68,7 @@ def cmd_seed(args) -> int:
 
     store = _store()
     for g in golden_set():
-        r = process_pdf(find_pdf(g["file"]), doc_id=g["file"], condition="clean",
-                        include_text=False)  # fmt: skip
+        r = process_pdf(find_pdf(g["file"]), doc_id=g["file"], condition="clean")
         if r.status == "ok":
             store.save(r)
         else:

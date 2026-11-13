@@ -25,6 +25,23 @@ uv run docintel query expiring_soon days=90
 Each field comes back with a validation status (`verified` / `unverified` / `failed`) and the
 character offsets of its evidence quote in the parsed text.
 
+## API
+```bash
+make serve    # http://127.0.0.1:8000, interactive docs at /docs
+```
+Extraction takes ~5 s for a digital contract and ~40 s for a scan, so the API is job-based:
+
+```bash
+curl -F "file=@contract.pdf" localhost:8000/v1/jobs        # 202 {job_id, status_url}
+curl localhost:8000/v1/jobs/<job_id>                       # queued | running | done (+ result) | error
+curl "localhost:8000/v1/contracts/<doc_id>?include_text=true"   # result + parsed text for highlighting
+curl "localhost:8000/v1/queries/expiring_soon?days=90"
+```
+Uploading the same file again returns the stored result immediately (documents are keyed by a
+content hash), and a duplicate upload while the first is still processing joins that job
+instead of paying twice. Uploads are checked (≤10 MB, real PDF, ≤60 pages) and deleted after
+processing.
+
 ## Analytics on extracted contracts
 Validated records are stored in DuckDB as typed columns (dates, durations in days, booleans),
 so portfolio questions become SQL ([`storage/store.py`](src/docintel/storage/store.py)):

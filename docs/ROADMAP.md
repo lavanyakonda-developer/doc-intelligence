@@ -12,8 +12,8 @@ Order is fixed: pipeline and evals first, UI only after they're done.
 | 5 | Validation: validators, cross-field checks, retry with feedback, evidence check, abstention | ✅ |
 | 6 | Evals: per-field P/R/F1 by type, per parser/model, error taxonomy, threshold tuning on dev, `make eval` → DuckDB | ✅ |
 | 7 | Pipeline entry point, results store + analytics queries, CI (GitHub Actions) | ✅ |
-| 8 | API: FastAPI upload → job → result, tests | ⏭ next |
-| 9 | Deploy: Docker + Cloud Run, secrets, cost controls | |
+| 8 | API: FastAPI upload → job → result, tests | ✅ |
+| 9 | Deploy: Docker + Cloud Run, secrets, cost controls | ⏭ next |
 | **9.5** | **Demo UI + public-demo hardening** (below) | |
 | 10 | Observability: Phoenix tracing linked to eval results | |
 | 11 | Portfolio & interview pack | |
