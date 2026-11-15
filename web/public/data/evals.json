@@ -1,0 +1,524 @@
+{
+ "test_docs": 22,
+ "headline": [
+  {
+   "model": "gpt-6-luna",
+   "prompt": "extract_v3",
+   "replicate": 0,
+   "precision": 79.3,
+   "recall": 90.4,
+   "f1": 84.5,
+   "ci": [
+    73.6,
+    92.2
+   ],
+   "usd_per_doc": 0.00197,
+   "production": true
+  },
+  {
+   "model": "gpt-6-luna",
+   "prompt": "extract_v3",
+   "replicate": 1,
+   "precision": 81.1,
+   "recall": 90.9,
+   "f1": 85.7,
+   "ci": [
+    74.6,
+    93.3
+   ],
+   "usd_per_doc": 0.00061,
+   "production": false
+  },
+  {
+   "model": "gpt-6-luna",
+   "prompt": "extract_v3",
+   "replicate": 2,
+   "precision": 80.4,
+   "recall": 88.9,
+   "f1": 84.5,
+   "ci": [
+    73.8,
+    92.0
+   ],
+   "usd_per_doc": 0.0006,
+   "production": false
+  },
+  {
+   "model": "gpt-6.1-terra",
+   "prompt": "extract_v3",
+   "replicate": 0,
+   "precision": 78.8,
+   "recall": 90.9,
+   "f1": 84.4,
+   "ci": [
+    73.5,
+    91.9
+   ],
+   "usd_per_doc": 0.01936,
+   "production": false
+  }
+ ],
+ "paired": [
+  {
+   "label": "Replicate r1 vs r0 (run-to-run noise)",
+   "delta": 1.2,
+   "ci": [
+    -0.9,
+    4.1
+   ]
+  },
+  {
+   "label": "gpt-6.1-terra (10\u00d7 cost) vs gpt-6-luna",
+   "delta": -0.1,
+   "ci": [
+    -3.7,
+    3.5
+   ]
+  }
+ ],
+ "per_field": [
+  {
+   "field": "document_name",
+   "type": "text",
+   "precision": 90.9,
+   "recall": 90.9,
+   "f1": 90.9,
+   "doc_macro_f1": null,
+   "tp": 20,
+   "fp": 2,
+   "fn": 2
+  },
+  {
+   "field": "parties",
+   "type": "entity_list",
+   "precision": 62.2,
+   "recall": 92.0,
+   "f1": 74.2,
+   "doc_macro_f1": 90.8,
+   "tp": 46,
+   "fp": 28,
+   "fn": 4
+  },
+  {
+   "field": "agreement_date",
+   "type": "date",
+   "precision": 84.2,
+   "recall": 80.0,
+   "f1": 82.1,
+   "doc_macro_f1": null,
+   "tp": 16,
+   "fp": 3,
+   "fn": 4
+  },
+  {
+   "field": "effective_date",
+   "type": "date",
+   "precision": 94.1,
+   "recall": 94.1,
+   "f1": 94.1,
+   "doc_macro_f1": null,
+   "tp": 16,
+   "fp": 1,
+   "fn": 1
+  },
+  {
+   "field": "expiration_date",
+   "type": "date",
+   "precision": 92.3,
+   "recall": 100.0,
+   "f1": 96.0,
+   "doc_macro_f1": null,
+   "tp": 12,
+   "fp": 1,
+   "fn": 0
+  },
+  {
+   "field": "renewal_term",
+   "type": "duration",
+   "precision": 90.0,
+   "recall": 90.0,
+   "f1": 90.0,
+   "doc_macro_f1": null,
+   "tp": 9,
+   "fp": 1,
+   "fn": 1
+  },
+  {
+   "field": "notice_period_to_terminate_renewal",
+   "type": "duration",
+   "precision": 100.0,
+   "recall": 100.0,
+   "f1": 100.0,
+   "doc_macro_f1": null,
+   "tp": 5,
+   "fp": 0,
+   "fn": 0
+  },
+  {
+   "field": "governing_law",
+   "type": "enum",
+   "precision": 100.0,
+   "recall": 100.0,
+   "f1": 100.0,
+   "doc_macro_f1": null,
+   "tp": 20,
+   "fp": 0,
+   "fn": 0
+  },
+  {
+   "field": "non_compete",
+   "type": "boolean",
+   "precision": 100.0,
+   "recall": 100.0,
+   "f1": 100.0,
+   "doc_macro_f1": null,
+   "tp": 4,
+   "fp": 0,
+   "fn": 0
+  },
+  {
+   "field": "exclusivity",
+   "type": "boolean",
+   "precision": 75.0,
+   "recall": 100.0,
+   "f1": 85.7,
+   "doc_macro_f1": null,
+   "tp": 6,
+   "fp": 2,
+   "fn": 0
+  },
+  {
+   "field": "uncapped_liability",
+   "type": "boolean",
+   "precision": 62.5,
+   "recall": 100.0,
+   "f1": 76.9,
+   "doc_macro_f1": null,
+   "tp": 5,
+   "fp": 3,
+   "fn": 0
+  },
+  {
+   "field": "termination_for_convenience",
+   "type": "boolean",
+   "precision": 75.0,
+   "recall": 81.8,
+   "f1": 78.3,
+   "doc_macro_f1": null,
+   "tp": 9,
+   "fp": 3,
+   "fn": 2
+  },
+  {
+   "field": "change_of_control",
+   "type": "boolean",
+   "precision": 81.8,
+   "recall": 81.8,
+   "f1": 81.8,
+   "doc_macro_f1": null,
+   "tp": 9,
+   "fp": 2,
+   "fn": 2
+  },
+  {
+   "field": "cap_on_liability",
+   "type": "clause",
+   "precision": 78.6,
+   "recall": 73.3,
+   "f1": 75.9,
+   "doc_macro_f1": null,
+   "tp": 11,
+   "fp": 3,
+   "fn": 4
+  }
+ ],
+ "by_type": [
+  {
+   "group": "boolean",
+   "docs": 22,
+   "f1": 82.5,
+   "ci": [
+    72.5,
+    90.9
+   ]
+  },
+  {
+   "group": "clause",
+   "docs": 22,
+   "f1": 75.9,
+   "ci": [
+    53.3,
+    94.1
+   ]
+  },
+  {
+   "group": "date",
+   "docs": 22,
+   "f1": 89.8,
+   "ci": [
+    78.1,
+    97.2
+   ]
+  },
+  {
+   "group": "duration",
+   "docs": 22,
+   "f1": 93.3,
+   "ci": [
+    75.0,
+    100.0
+   ]
+  },
+  {
+   "group": "entity_list",
+   "docs": 22,
+   "f1": 74.2,
+   "ci": [
+    47.9,
+    98.0
+   ]
+  },
+  {
+   "group": "enum",
+   "docs": 22,
+   "f1": 100.0,
+   "ci": [
+    100.0,
+    100.0
+   ]
+  },
+  {
+   "group": "text",
+   "docs": 22,
+   "f1": 90.9,
+   "ci": [
+    77.3,
+    100.0
+   ]
+  }
+ ],
+ "by_length": [
+  {
+   "group": "long",
+   "docs": 8,
+   "f1": 91.0,
+   "ci": [
+    84.1,
+    96.2
+   ]
+  },
+  {
+   "group": "medium",
+   "docs": 7,
+   "f1": 77.5,
+   "ci": [
+    57.5,
+    93.9
+   ]
+  },
+  {
+   "group": "short",
+   "docs": 7,
+   "f1": 86.5,
+   "ci": [
+    78.9,
+    93.5
+   ]
+  }
+ ],
+ "by_status": [
+  {
+   "group": "absent",
+   "docs": 22,
+   "f1": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "group": "failed",
+   "docs": 2,
+   "f1": 100.0,
+   "ci": [
+    0.0,
+    100.0
+   ]
+  },
+  {
+   "group": "unverified",
+   "docs": 9,
+   "f1": 66.7,
+   "ci": [
+    37.0,
+    94.7
+   ]
+  },
+  {
+   "group": "verified",
+   "docs": 22,
+   "f1": 86.7,
+   "ci": [
+    74.7,
+    94.9
+   ]
+  }
+ ],
+ "end_to_end_scans": [
+  {
+   "parser": "pypdf",
+   "condition": "clean",
+   "f1": 86.0,
+   "ci": [
+    79.3,
+    91.3
+   ]
+  },
+  {
+   "parser": "docling",
+   "condition": "heavy",
+   "f1": 78.0,
+   "ci": [
+    71.8,
+    84.7
+   ]
+  },
+  {
+   "parser": "vision-gpt-6-luna",
+   "condition": "heavy",
+   "f1": 85.5,
+   "ci": [
+    78.9,
+    91.3
+   ]
+  },
+  {
+   "parser": "docling",
+   "condition": "light",
+   "f1": 81.4,
+   "ci": [
+    69.6,
+    91.2
+   ]
+  },
+  {
+   "parser": "vision-gpt-6-luna",
+   "condition": "light",
+   "f1": 88.3,
+   "ci": [
+    81.1,
+    93.3
+   ]
+  }
+ ],
+ "parsers": [
+  {
+   "parser": "docling",
+   "condition": "clean",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 94.4,
+   "evidence_fuzzy_pct": 97.2,
+   "wer_pct": 2.4,
+   "sec_per_page": 0.48,
+   "usd_per_1k_pages": 0.0,
+   "page_errors": 0
+  },
+  {
+   "parser": "docling",
+   "condition": "light",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 71.8,
+   "evidence_fuzzy_pct": 93.0,
+   "wer_pct": 11.0,
+   "sec_per_page": 3.54,
+   "usd_per_1k_pages": 0.0,
+   "page_errors": 0
+  },
+  {
+   "parser": "docling",
+   "condition": "heavy",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 26.8,
+   "evidence_fuzzy_pct": 84.5,
+   "wer_pct": 23.7,
+   "sec_per_page": 2.92,
+   "usd_per_1k_pages": 0.0,
+   "page_errors": 0
+  },
+  {
+   "parser": "pypdf",
+   "condition": "clean",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 93.0,
+   "evidence_fuzzy_pct": 100.0,
+   "wer_pct": 0.7,
+   "sec_per_page": 0.0,
+   "usd_per_1k_pages": 0.0,
+   "page_errors": 0
+  },
+  {
+   "parser": "pypdf",
+   "condition": "light",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 0.0,
+   "evidence_fuzzy_pct": 0.0,
+   "wer_pct": 100.0,
+   "sec_per_page": 0.0,
+   "usd_per_1k_pages": 0.0,
+   "page_errors": 0
+  },
+  {
+   "parser": "pypdf",
+   "condition": "heavy",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 0.0,
+   "evidence_fuzzy_pct": 0.0,
+   "wer_pct": 100.0,
+   "sec_per_page": 0.0,
+   "usd_per_1k_pages": 0.0,
+   "page_errors": 0
+  },
+  {
+   "parser": "vision-gpt-6-luna",
+   "condition": "clean",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 91.5,
+   "evidence_fuzzy_pct": 100.0,
+   "wer_pct": 0.9,
+   "sec_per_page": 2.33,
+   "usd_per_1k_pages": 0.609,
+   "page_errors": 0
+  },
+  {
+   "parser": "vision-gpt-6-luna",
+   "condition": "light",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 90.1,
+   "evidence_fuzzy_pct": 100.0,
+   "wer_pct": 0.9,
+   "sec_per_page": 1.56,
+   "usd_per_1k_pages": 0.61,
+   "page_errors": 0
+  },
+  {
+   "parser": "vision-gpt-6-luna",
+   "condition": "heavy",
+   "docs": 6,
+   "pages": 57,
+   "evidence_exact_pct": 81.7,
+   "evidence_fuzzy_pct": 100.0,
+   "wer_pct": 1.5,
+   "sec_per_page": 1.72,
+   "usd_per_1k_pages": 0.609,
+   "page_errors": 0
+  }
+ ]
+}

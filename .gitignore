@@ -8,7 +8,7 @@ docs/DECISIONS.md
 docs/interview/
 
 # data (re-creatable via `make data`)
-data/
+/data/
 *.duckdb
 *.duckdb.wal
 
