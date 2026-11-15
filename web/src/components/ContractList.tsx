@@ -1,14 +1,9 @@
+import { useState } from "react";
 import type { IndexItem } from "../types/api";
 
-// YOUR TASK. Spec (tests: __tests__/ContractList.test.tsx):
-//   - one button per contract, showing document_name (or doc_id if null), contract_type and pages
-//   - show "<correct>/<scored> correct" for each contract
-//   - the selected contract's button has aria-pressed="true", others "false"
-//   - clicking a button calls onSelect(key)
-//   - a search box (role "searchbox", label "Filter contracts") filters case-insensitively
-//     by document name or any party
-// Hint: keep the filter text in useState; derive the visible list while rendering (don't
-// store the filtered list in state).
+// Sidebar: searchable list of the golden-set contracts with their score vs CUAD.
+// The filter text is the only state; the visible list is derived while rendering, so it
+// can never go stale relative to `contracts`.
 
 interface Props {
   contracts: IndexItem[];
@@ -17,14 +12,39 @@ interface Props {
 }
 
 export default function ContractList({ contracts, selectedKey, onSelect }: Props) {
-  void selectedKey; // remove when implemented
+  const [query, setQuery] = useState("");
+  const needle = query.trim().toLowerCase();
+  const visible = needle
+    ? contracts.filter((c) =>
+        [c.document_name ?? "", ...c.parties].some((s) => s.toLowerCase().includes(needle)),
+      )
+    : contracts;
+
   return (
     <aside className="contract-list">
-      {contracts.map((c) => (
-        <button key={c.key} onClick={() => onSelect(c.key)}>
-          {c.document_name ?? c.doc_id}
+      <input
+        type="search"
+        aria-label="Filter contracts"
+        placeholder="Filter by name or party"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      {visible.map((c) => (
+        <button
+          key={c.key}
+          aria-pressed={c.key === selectedKey}
+          onClick={() => onSelect(c.key)}
+        >
+          <span className="item-title">{c.document_name ?? c.doc_id}</span>
+          <span className="item-meta">
+            {c.contract_type} · {c.pages} pages ·{" "}
+            <span className={c.correct === c.scored ? "correct" : undefined}>
+              {c.correct}/{c.scored} correct
+            </span>
+          </span>
         </button>
       ))}
+      {visible.length === 0 && <p className="hint">No contracts match “{query}”.</p>}
     </aside>
   );
 }

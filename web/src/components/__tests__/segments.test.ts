@@ -5,8 +5,7 @@ const join = (s: { text: string }[]) => s.map((x) => x.text).join("");
 const marked = (s: { text: string; highlighted: boolean }[]) =>
   s.filter((x) => x.highlighted).map((x) => x.text);
 
-// Remove `.skip` when you start implementing splitSegments.
-describe.skip("splitSegments", () => {
+describe("splitSegments", () => {
   const text = "0123456789";
 
   it("no spans -> one plain segment", () => {
@@ -22,15 +21,35 @@ describe.skip("splitSegments", () => {
   });
 
   it("merges overlapping, touching and unsorted spans", () => {
-    expect(marked(splitSegments(text, [[6, 8], [1, 3], [2, 4], [4, 5]]))).toEqual(["1234", "67"]);
+    expect(
+      marked(
+        splitSegments(text, [
+          [6, 8],
+          [1, 3],
+          [2, 4],
+          [4, 5],
+        ]),
+      ),
+    ).toEqual(["1234", "67"]);
   });
 
   it("clamps out-of-range spans and drops empty ones", () => {
-    expect(marked(splitSegments(text, [[-5, 2], [8, 99], [5, 5]]))).toEqual(["01", "89"]);
+    expect(
+      marked(
+        splitSegments(text, [
+          [-5, 2],
+          [8, 99],
+          [5, 5],
+        ]),
+      ),
+    ).toEqual(["01", "89"]);
   });
 
   it("never loses or duplicates text, never emits empty segments", () => {
-    const s = splitSegments(text, [[0, 10], [3, 4]]);
+    const s = splitSegments(text, [
+      [0, 10],
+      [3, 4],
+    ]);
     expect(join(s)).toBe(text);
     expect(s.every((x) => x.text.length > 0)).toBe(true);
   });

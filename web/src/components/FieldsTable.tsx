@@ -1,17 +1,9 @@
+import type { KeyboardEvent } from "react";
+import { FIELD_LABELS, formatValue } from "../format";
 import type { DemoContract } from "../types/api";
 
-// YOUR TASK. Spec (tests: __tests__/FieldsTable.test.tsx):
-//   - a table with one row per field, in the order of contract.truth's keys;
-//     columns: Field (FIELD_LABELS from ../format), Value (formatValue), Status, vs CUAD
-//   - Status shows fields[name].status (verified / unverified / failed / absent)
-//   - "vs CUAD" shows truth[name].outcome (correct / partial / wrong / excluded)
-//   - rows with evidence spans are clickable: clicking calls onSelectField(name);
-//     clicking the selected row again calls onSelectField(null)
-//   - the selected row has aria-selected="true"
-//   - rows WITHOUT spans are not clickable (absent fields have nothing to highlight)
-//   - show the validator's reasons (fields[name].reasons) for unverified/failed fields
-// Hint: getting the value: contract.result.record[name].value — the record is typed per
-// field, so index it as `(record as unknown as Record<string, {value: unknown}>)[name]`.
+// One row per extracted field: value, validator verdict, and how it scored against the
+// CUAD label. Rows with evidence select the field, which highlights its quote in the text.
 
 interface Props {
   contract: DemoContract;
@@ -20,12 +12,60 @@ interface Props {
 }
 
 export default function FieldsTable({ contract, selectedField, onSelectField }: Props) {
-  void selectedField;
-  void onSelectField;
+  const { result, truth } = contract;
+  // The record is typed per field; for a generic table, index it by name.
+  const record = result.record as unknown as Record<string, { value: unknown } | undefined>;
+
   return (
     <section className="fields">
-      <h2>{contract.result.record?.document_name.value ?? contract.result.doc_id}</h2>
-      <p>TODO: fields table</p>
+      <h2>{formatValue(record.document_name?.value) || result.doc_id}</h2>
+      <p className="hint">Click a row to highlight its evidence in the contract.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+            <th>Status</th>
+            <th>vs CUAD</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(truth).map((name) => {
+            const field = result.fields[name];
+            const selected = name === selectedField;
+            const clickable = (field?.spans.length ?? 0) > 0;
+            const toggle = () => onSelectField(selected ? null : name);
+            const onKey = (e: KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle();
+              }
+            };
+            return (
+              <tr
+                key={name}
+                aria-selected={selected}
+                className={clickable ? "clickable" : undefined}
+                onClick={clickable ? toggle : undefined}
+                onKeyDown={clickable ? onKey : undefined}
+                tabIndex={clickable ? 0 : undefined}
+              >
+                <td>{FIELD_LABELS[name] ?? name}</td>
+                <td>{formatValue(record[name]?.value)}</td>
+                <td>
+                  <span className={`badge ${field?.status ?? ""}`}>{field?.status ?? "—"}</span>
+                  {field && field.status !== "verified" && field.reasons.length > 0 && (
+                    <div className="reasons">{field.reasons.join("; ")}</div>
+                  )}
+                </td>
+                <td>
+                  <span className={`badge ${truth[name].outcome}`}>{truth[name].outcome}</span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </section>
   );
 }

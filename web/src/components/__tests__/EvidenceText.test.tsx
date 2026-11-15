@@ -5,8 +5,7 @@ import { TEXT } from "./fixtures";
 
 const law: [number, number] = [TEXT.indexOf("laws"), TEXT.indexOf("laws") + 16];
 
-// Remove `.skip` when you start implementing EvidenceText (after splitSegments).
-describe.skip("EvidenceText", () => {
+describe("EvidenceText", () => {
   it("wraps the span in <mark> and keeps all text", () => {
     const { container } = render(<EvidenceText text={TEXT} spans={[law]} />);
     const marks = container.querySelectorAll("mark");

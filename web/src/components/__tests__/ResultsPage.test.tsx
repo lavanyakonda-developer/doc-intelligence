@@ -3,8 +3,7 @@ import { describe, expect, it } from "vitest";
 import ResultsPage from "../ResultsPage";
 import { evals } from "./fixtures";
 
-// Remove `.skip` when you start implementing ResultsPage.
-describe.skip("ResultsPage", () => {
+describe("ResultsPage", () => {
   it("states the test-set size", () => {
     render(<ResultsPage evals={evals} />);
     expect(screen.getByRole("heading", { name: "Results" })).toBeInTheDocument();

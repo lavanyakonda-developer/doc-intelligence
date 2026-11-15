@@ -4,8 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import ContractList from "../ContractList";
 import { contracts } from "./fixtures";
 
-// Remove `.skip` when you start implementing ContractList.
-describe.skip("ContractList", () => {
+describe("ContractList", () => {
   it("shows each contract with type, pages and score", () => {
     render(<ContractList contracts={contracts} selectedKey={null} onSelect={() => {}} />);
     const first = screen.getByRole("button", { name: /Supply Agreement/ });

@@ -6,8 +6,7 @@ import { contract } from "./fixtures";
 
 const row = (label: RegExp) => screen.getByRole("row", { name: label });
 
-// Remove `.skip` when you start implementing FieldsTable.
-describe.skip("FieldsTable", () => {
+describe("FieldsTable", () => {
   it("one row per field with label, formatted value, status and CUAD outcome", () => {
     render(<FieldsTable contract={contract} selectedField={null} onSelectField={() => {}} />);
     expect(screen.getAllByRole("row")).toHaveLength(1 + 4); // header + fields
