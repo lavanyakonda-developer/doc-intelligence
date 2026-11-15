@@ -132,7 +132,7 @@ Extraction takes ~5 s for a digital contract and ~40 s for a scan, so the API is
 result instantly (keyed by content hash).
 
 To reproduce the experiments: `make data` (download CUAD), then `make parsers`, `make extract`
-and `make eval`. Every run is cached; the whole project cost **$0.87** in API calls
+and `make eval`. Every run is cached; the whole project cost **$0.93** in API calls
 ([`docs/COSTS.md`](docs/COSTS.md)).
 
 ## Analytics on extracted contracts
@@ -147,6 +147,23 @@ become SQL ([`storage/store.py`](src/docintel/storage/store.py)):
 | `governing_law_mix` | Which jurisdictions govern the portfolio |
 | `needs_review` | Fields that failed or couldn't be verified, with reasons |
 | `risk_flags` | Contracts ranked by exclusivity / non-compete / uncapped / change of control |
+
+## Observability
+Every document produces one trace in a local [Arize Phoenix](https://github.com/Arize-ai/phoenix)
+(no account, no cloud): `process_pdf → parse → extract → [LLM call] → validate → retry`, with
+model, prompt version, parser, tokens, cost and validator reasons as span attributes. The OpenAI
+call is auto-instrumented (OpenInference); pipeline stages are custom OpenTelemetry spans, and
+the code only depends on the OTel API, so with tracing off (tests, CI) it costs nothing.
+
+**Traces are linked to eval results.** After a traced run, the eval harness attaches the outcome
+of every field (correct / partial / wrong vs the CUAD label) and a per-document F1 to that
+document's trace, so a question like *"show me every contract where governing law was wrong"*
+is a filter in Phoenix, and one click opens the exact prompt, response and validator verdict.
+```bash
+make phoenix   # UI on http://localhost:6006
+make traces    # traced golden-set run (~$0.06) + eval annotations (449 on 30 traces)
+```
+<!-- SCREENSHOTS: trace tree · annotation filter (governing_law == wrong) · span attributes -->
 
 ## Engineering
 - **CI** (GitHub Actions, no secrets, no API calls): lint, 160+ tests, and an **eval regression

@@ -1,4 +1,4 @@
-.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci serve demo-data web
+.PHONY: setup data explore golden degrade gt test lint parsers extract validate eval seed ci serve demo-data web phoenix traces
 
 setup:            ## install deps + git hooks
 	uv sync
@@ -59,3 +59,10 @@ demo-data:        ## export precomputed results + TS types for the static demo (
 
 web:              ## run the demo UI locally (http://localhost:5173/doc-intelligence/)
 	cd web && npm install && npm run dev
+
+phoenix:          ## local Phoenix UI + trace collector on http://localhost:6006 (no account)
+	uvx --from "arize-phoenix==21.0.0" phoenix serve
+
+traces:           ## traced golden-set run (~$0.05) + eval outcomes as span annotations
+	uv run --group observability python scripts/traced_run.py
+	uv run --group observability python scripts/annotate_traces.py

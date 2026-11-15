@@ -66,6 +66,7 @@ class ExtractionResult:
     cost_usd: float = 0.0
     seconds: float = 0.0
     detail: str | None = None
+    cached: bool = False  # True when served from disk (no API call, no cost this time)
 
 
 class Extractor:
@@ -93,7 +94,7 @@ class Extractor:
     def extract(self, doc_id: str, text: str, *, refresh: bool = False) -> ExtractionResult:
         path = self.dir / f"{doc_id}.json"
         if path.exists() and not refresh:
-            return ExtractionResult(**json.loads(path.read_text()))
+            return ExtractionResult(**{**json.loads(path.read_text()), "cached": True})
         self._write_config()
         res = self._call(doc_id, text)
         path.write_text(json.dumps(asdict(res), ensure_ascii=False))
@@ -114,7 +115,7 @@ class Extractor:
         key = hashlib.sha256(feedback.encode()).hexdigest()[:8]
         path = self.dir / "retries" / f"{doc_id}-{key}.json"
         if path.exists():
-            return ExtractionResult(**json.loads(path.read_text()))
+            return ExtractionResult(**{**json.loads(path.read_text()), "cached": True})
         messages = [
             {"role": "user", "content": f"<contract>\n{text}\n</contract>"},
             {"role": "assistant", "content": json.dumps(previous_raw, ensure_ascii=False)},

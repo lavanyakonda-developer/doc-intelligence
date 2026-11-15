@@ -29,7 +29,10 @@ def cmd_extract(args) -> int:
             worst = 1
             continue
         if store:
-            store.save(r)
+            from docintel.tracing import stage
+
+            with stage("store", "CHAIN", doc_id=r.doc_id):
+                store.save(r)
         if args.json:
             print(r.model_dump_json(indent=2, exclude={"text"}))
             continue
@@ -92,7 +95,13 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("seed", help="load the golden set into the store ($0, cached)")
     s.set_defaults(fn=cmd_seed)
     args = ap.parse_args(argv)
-    return args.fn(args)
+    from docintel.tracing import flush, maybe_setup_tracing
+
+    maybe_setup_tracing()  # DOCINTEL_TRACING=1
+    try:
+        return args.fn(args)
+    finally:
+        flush()
 
 
 if __name__ == "__main__":

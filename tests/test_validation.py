@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from docintel.extraction.extractor import ExtractionResult
+from docintel.extraction.extractor import ExtractionResult, RunConfig
 from docintel.extraction.to_record import to_record
 from docintel.schema.types import PartialDate
 from docintel.validation.pipeline import process
@@ -127,6 +127,7 @@ def test_retry_fixes_failed_field_and_cannot_regress_passing_ones():
     }
     calls = []
     fake = SimpleNamespace(
+        cfg=RunConfig("gpt-6-luna"),
         extract=lambda doc_id, text: _result(bad),
         retry=lambda doc_id, text, prev, failures: calls.append(failures) or _result(retry_raw),
     )
@@ -139,7 +140,9 @@ def test_retry_fixes_failed_field_and_cannot_regress_passing_ones():
 
 
 def test_no_retry_when_nothing_failed():
-    fake = SimpleNamespace(extract=lambda doc_id, text: _result({}), retry=None)
+    fake = SimpleNamespace(
+        cfg=RunConfig("gpt-6-luna"), extract=lambda doc_id, text: _result({}), retry=None
+    )
     r = process(fake, "d", DOC)
     assert r.retry is None and r.failed_before == {}
 

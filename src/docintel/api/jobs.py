@@ -13,6 +13,7 @@ from pathlib import Path
 
 from docintel.pipeline import ContractResult
 from docintel.storage.store import ResultStore
+from docintel.tracing import stage
 
 log = logging.getLogger("docintel.jobs")
 
@@ -48,7 +49,8 @@ class JobRunner:
                 self.store.update_job(job_id, "error", result.error)
                 log.info("job %s failed: %s", job_id, result.error)
                 return
-            self.store.save(result)
+            with stage("store", "CHAIN", doc_id=doc_id, job_id=job_id):
+                self.store.save(result)
             self.store.update_job(job_id, "done")
             log.info("job %s done: %s $%.4f %.1fs", job_id, result.parser, result.cost_usd,
                      result.seconds)  # fmt: skip

@@ -13,8 +13,8 @@ Order is fixed: pipeline and evals first, UI only after they're done.
 | 6 | Evals: per-field P/R/F1 by type, per parser/model, error taxonomy, threshold tuning on dev, `make eval` → DuckDB | ✅ |
 | 7 | Pipeline entry point, results store + analytics queries, CI (GitHub Actions) | ✅ |
 | 8 | API: FastAPI upload → job → result, tests | ✅ |
-| 9 | Static demo (GitHub Pages, precomputed results, no backend) + README + 90 s video | ⏭ next |
-| 10 | Observability: Arize Phoenix locally, OpenInference + custom spans, traces linked to eval results | |
+| 9 | Static demo (GitHub Pages, precomputed results, no backend) + README + 90 s video | 🟡 built; your UI components, Pages setup, video pending |
+| 10 | Observability: Arize Phoenix locally, OpenInference + custom spans, traces linked to eval results | ✅ (screenshots pending) |
 | 11 | Portfolio & interview pack | |
 
 ## Phase 9: static demo, no live API (decided 2026-11-13)

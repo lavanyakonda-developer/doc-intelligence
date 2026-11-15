@@ -9,6 +9,7 @@ dependencies = [
     "fastapi>=0.162",
     "numpy>=2.5.4",
     "openai>=3.50.0",
+    "opentelemetry-api==1.45.2",
     "pillow>=13.0.0",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
@@ -30,6 +31,14 @@ dev = [
     "ruff>=0.6",
     "pre-commit>=3.7",
     "httpx>=0.28",
+    "opentelemetry-sdk==1.45.2",
+]
+observability = [
+    "arize-phoenix-client==3.6.0",
+    "arize-phoenix-otel==0.17.2",
+    "openinference-instrumentation-openai==0.1.68",
+    "openinference-semantic-conventions==0.1.43",
+    "opentelemetry-sdk==1.45.2",
 ]
 # Phase 3 parser comparison only (D6 keeps Docling out of production). Pulls in torch, so
 # it's opt-in: `uv sync --group research`. Keeps CI and the Docker image small.

@@ -26,6 +26,7 @@ from docintel.api.jobs import JobRunner, ProcessFn
 from docintel.config import PROJECT_ROOT, get_settings
 from docintel.pipeline import ContractResult, content_id, process_pdf
 from docintel.storage.store import QUERIES, DuckDBStore, ResultStore, seed_from_export
+from docintel.tracing import flush, maybe_setup_tracing
 
 DEMO_DATA = PROJECT_ROOT / "web" / "public" / "data"  # committed export (scripts/export_demo.py)
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB: the largest CUAD contract is ~2 MB
@@ -73,6 +74,7 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
+        maybe_setup_tracing()  # DOCINTEL_TRACING=1 -> spans to Phoenix
         n = store.fail_interrupted_jobs()
         if n:
             log.warning("marked %d interrupted jobs as failed", n)
@@ -81,6 +83,7 @@ def create_app(
             log.info("seeded %d demo contracts from %s", seeded, seed_dir)
         yield
         runner.shutdown()
+        flush()
 
     app = FastAPI(
         title="docintel",

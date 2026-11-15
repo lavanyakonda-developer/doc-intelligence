@@ -25,6 +25,7 @@ class ParseResult:
     input_tokens: int = 0
     output_tokens: int = 0
     errors: list[str] = field(default_factory=list)  # per-page failures, kept not hidden
+    cached: bool = False  # True when served from disk
 
 
 class Parser(Protocol):
@@ -41,7 +42,7 @@ def parse_cached(
     (the file stem for the corpus; a content hash for uploads, so names can't collide)."""
     path = CACHE_DIR / parser.name / condition / f"{key or pdf.stem}.json"
     if path.exists() and not refresh:
-        return ParseResult(**json.loads(path.read_text()))
+        return ParseResult(**{**json.loads(path.read_text()), "cached": True})
     t0 = time.perf_counter()
     result = parser.parse(pdf)
     result.seconds = round(time.perf_counter() - t0, 2)  # wall-clock, measured the same for all
