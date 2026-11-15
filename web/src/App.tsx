@@ -5,13 +5,14 @@ import FieldsTable from "./components/FieldsTable";
 import ResultsPage from "./components/ResultsPage";
 import { useContract, useEvals, useIndex } from "./data";
 
-// Hash routes work on GitHub Pages with no server config: #/c/<key> and #/results.
+// Hash routes work on GitHub Pages with no server config: #/results (the default landing
+// page), #/c (first contract) and #/c/<key>.
 type Route = { view: "contracts"; key: string | null } | { view: "results" };
 
 function parseHash(hash: string): Route {
   const [, view, key] = hash.replace(/^#/, "").split("/");
-  if (view === "results") return { view: "results" };
-  return { view: "contracts", key: view === "c" && key ? key : null };
+  if (view === "c") return { view: "contracts", key: key || null };
+  return { view: "results" };
 }
 
 function useRoute(): Route {
@@ -29,14 +30,16 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <a className="brand" href="#/">docintel</a>
+        <a className="brand" href="#/results">docintel</a>
         <nav>
-          <a href="#/" aria-current={route.view === "contracts" ? "page" : undefined}>Contracts</a>
-          <a href="#/results" aria-current={route.view === "results" ? "page" : undefined}>Results</a>
-          <a href="https://github.com/lavanyakonda-developer/doc-intelligence">Code</a>
+          <a href="#/results" aria-current={route.view === "results" ? "page" : undefined}>results</a>
+          <a href="#/c" aria-current={route.view === "contracts" ? "page" : undefined}>contracts</a>
         </nav>
+        <a className="code-link" href="https://github.com/lavanyakonda-developer/doc-intelligence">code</a>
       </header>
-      <main>{route.view === "results" ? <Results /> : <Contracts selectedKey={route.key} />}</main>
+      <main className={`view-${route.view}`}>
+        {route.view === "results" ? <Results /> : <Contracts selectedKey={route.key} />}
+      </main>
       <footer>
         Precomputed output of the real pipeline (gpt-6-luna, prompt v3); no live model calls.
         Contracts from <a href="https://www.atticusprojectai.org/cuad">CUAD</a> by The Atticus
@@ -54,6 +57,16 @@ function Contracts({ selectedKey }: { selectedKey: string | null }) {
   const [field, setField] = useState<string | null>(null);
   useEffect(() => setField(null), [selectedKey]);
 
+  // No contract in the URL: open the first one. replaceState, not a new history entry, so
+  // Back doesn't bounce between #/c and #/c/<first>.
+  const firstKey = index.state === "ready" ? index.data.contracts[0]?.key : undefined;
+  useEffect(() => {
+    if (selectedKey === null && firstKey) {
+      window.history.replaceState(null, "", `#/c/${firstKey}`);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    }
+  }, [selectedKey, firstKey]);
+
   if (index.state !== "ready") return <Status of={index} />;
   const selected = contract.state === "ready" ? contract.data : null;
   return (
@@ -63,9 +76,7 @@ function Contracts({ selectedKey }: { selectedKey: string | null }) {
         selectedKey={selectedKey}
         onSelect={(key) => (window.location.hash = `#/c/${key}`)}
       />
-      {selectedKey === null ? (
-        <p className="hint">Pick a contract to see its extracted fields and evidence.</p>
-      ) : selected === null ? (
+      {selected === null ? (
         <Status of={contract} />
       ) : (
         <>
