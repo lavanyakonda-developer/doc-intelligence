@@ -5,6 +5,7 @@
 
 # private interview prep (kept local, not published)
 docs/DECISIONS.md
+docs/ROADMAP.md
 docs/interview/
 
 # data (re-creatable via `make data`)
